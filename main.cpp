@@ -34,51 +34,57 @@ vector<string> split(const string& src, const string& separator)
 
     return dest;
 }
-void save(string str) {
-	ofstream os(str);
-	for (auto& q : questions)
-	{
-		os << q.getSaveLine();
-	}
-	os.close();
+void save(string str)
+{
+    ofstream os(str);
+    for (auto& q : questions)
+    {
+        os << q.getSaveLine();
+    }
+    os.close();
 }
-void printInfo() {
-	int count = 0;
-	int corcount = 0;
-	int finish = 0;
-	for (const auto& q : questions) {
-		count += q.getCount();
-		corcount += q.getCorrectCount();
-		if ((double)q.getCorrectCount() / q.getCount() > 0.9) finish++;
-	}
-	cout << "总正确率：" << int((double)corcount / count * 1000) / 10.0 << "%(" << corcount << "/" << count << ") 总完成度："
-		<< int((double)finish / questions.size() * 1000) / 10.0 << "%(" << finish << "/" << questions.size() << ")" << endl << endl;
+void printInfo()
+{
+    int count = 0;
+    int corcount = 0;
+    int finish = 0;
+    for (const auto& q : questions)
+    {
+        count += q.getCount();
+        corcount += q.getCorrectCount();
+        if (static_cast<double>(q.getCorrectCount()) / q.getCount() > 0.9) finish++;
+    }
+    cout << "Correct rate" << int(static_cast<double>(corcount) / count * 1000) / 10.0 << " % (" << corcount << " / " << count << ") Progress:"
+         << int(static_cast<double>(finish) / questions.size() * 1000) / 10.0 << "%(" << finish << "/" << questions.size() << ")" << endl << endl;
 }
 int main()
 {
-	srand((unsigned int)time(NULL));
-	ifstream islist("list.txt");
-	vector<string> filenames;
- 	while (!islist.eof())
-	{
-		string line;
-		getline(islist, line);
-		filenames.push_back(line);
-	}
-	cout << "Choose the file you want to load" << endl;
-	int i = 0;
-	for (string filename : filenames) {
-		cout << "<" << char('a' + i) << ">" << " " << filename << endl;
-		i++;
-	}
-	unsigned char choice = 0;
-	do {
-		cin >> choice;
-		choice -= 'a';
-	} while (choice > filenames.size());
-	system("cls");
+    srand(static_cast<unsigned int>(time(nullptr)));
+    ifstream islist("list.txt");
+    vector<string> filenames;
+    while (!islist.eof())
+    {
+        string line;
+        getline(islist, line);
+        filenames.push_back(line);
+    }
+    cout << "Choose the file you want to load" << endl;
+    int i = 0;
+    for (string filename : filenames)
+    {
+        cout << "<" << char('a' + i) << ">" << " " << filename << endl;
+        i++;
+    }
+    unsigned char choice = 0;
+    do
+    {
+        cin >> choice;
+        choice -= 'a';
+    }
+    while (choice > filenames.size());
+    system("cls");
 
-	ifstream is(filenames[choice]);
+    ifstream is(filenames[choice]);
     while(!is.eof())
     {
         string line;
@@ -89,28 +95,28 @@ int main()
     }
     is.close();
 
-	printInfo();
-	while (true)
-	{
-		double sum = 0;
-		for (auto& q : questions)
-		{
-			sum += q.getRank();
-		}
-		double avg = sum / questions.size();
-		Question* pickQuestion;
-		while (true)
-		{
-			pickQuestion = &questions[rand() % questions.size()];
-			if (pickQuestion->getRank() <= avg) break;
-		}
-		cout << pickQuestion->getText() << ": ";
-		string ans;
-		cin >> ans;
-		system("cls");
-		printInfo();
-		pickQuestion->correct(ans);
-		cout << endl << endl;
-		save(filenames[choice]);
-	}
+    printInfo();
+    while (true)
+    {
+        double sum = 0;
+        for (auto& q : questions)
+        {
+            sum += q.getRank();
+        }
+        double avg = sum / questions.size();
+        Question* pickQuestion;
+        while (true)
+        {
+            pickQuestion = &questions[rand() % questions.size()];
+            if (pickQuestion->getRank() <= avg) break;
+        }
+        cout << pickQuestion->getText() << ": ";
+        string ans;
+        cin >> ans;
+        system("cls");
+        printInfo();
+        pickQuestion->correct(ans);
+        cout << endl << endl;
+        save(filenames[choice]);
+    }
 }
